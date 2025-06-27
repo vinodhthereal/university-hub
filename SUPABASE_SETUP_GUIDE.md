@@ -35,6 +35,7 @@ Once your project is ready:
    - **service_role** key: This is your `SUPABASE_SERVICE_ROLE_KEY` (keep this secret!)
 
 4. Copy these values to your `.env.local` file:
+
 ```env
 NEXT_PUBLIC_SUPABASE_URL=https://your-project-ref.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJ...your-anon-key...
@@ -60,6 +61,7 @@ If you prefer to create tables one by one:
 3. Start with these core tables in order:
 
 #### 1. Universities Table (if multi-tenant)
+
 ```sql
 CREATE TABLE universities (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
@@ -78,6 +80,7 @@ CREATE TABLE universities (
 ```
 
 #### 2. Departments Table
+
 ```sql
 CREATE TABLE departments (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
@@ -96,6 +99,7 @@ CREATE TABLE departments (
 ```
 
 #### 3. Users Table (extends auth.users)
+
 ```sql
 CREATE TABLE public.users (
   id UUID REFERENCES auth.users(id) ON DELETE CASCADE PRIMARY KEY,
@@ -149,8 +153,8 @@ CREATE POLICY "Users can view own profile" ON users
 CREATE POLICY "Admins can view all users" ON users
   FOR SELECT USING (
     EXISTS (
-      SELECT 1 FROM users 
-      WHERE id = auth.uid() 
+      SELECT 1 FROM users
+      WHERE id = auth.uid()
       AND role IN ('admin', 'super_admin')
     )
   );
@@ -172,11 +176,12 @@ For file uploads (profile pictures, documents):
    - `assignments` - for assignment submissions
 
 4. Set bucket policies:
+
 ```sql
 -- Example: Allow users to upload their own avatar
 CREATE POLICY "Users can upload own avatar" ON storage.objects
   FOR INSERT WITH CHECK (
-    bucket_id = 'avatars' 
+    bucket_id = 'avatars'
     AND auth.uid()::text = (storage.foldername(name))[1]
   );
 ```
@@ -203,10 +208,8 @@ const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
 async function testConnection() {
   try {
-    const { data, error } = await supabase
-      .from('users')
-      .select('count')
-      
+    const { data, error } = await supabase.from('users').select('count')
+
     if (error) throw error
     console.log('Connection successful!')
   } catch (error) {
@@ -249,15 +252,18 @@ VALUES (
 ## Common Issues and Solutions
 
 ### 1. CORS Errors
+
 - Make sure your site URL is added in **Authentication** → **URL Configuration**
 - Add `http://localhost:3000` to allowed URLs
 
 ### 2. Permission Denied Errors
+
 - Check if RLS is enabled without policies
 - Verify your service role key is correct
 - Check if the user has the right role
 
 ### 3. Connection Timeouts
+
 - Check if you selected the right region
 - Verify your internet connection
 - Try using a different DNS

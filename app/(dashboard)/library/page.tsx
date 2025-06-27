@@ -101,7 +101,8 @@ export default function LibraryPage() {
     try {
       const { data, error } = await supabase
         .from('library_transactions')
-        .select(`
+        .select(
+          `
           id,
           issue_date,
           due_date,
@@ -116,29 +117,31 @@ export default function LibraryPage() {
               full_name
             )
           )
-        `)
+        `
+        )
         .order('issue_date', { ascending: false })
 
       if (error) throw error
 
       // Transform the data to match our interface
-      const transformedTransactions: Transaction[] = data?.map((transaction: any) => {
-        const now = new Date()
-        const dueDate = new Date(transaction.due_date)
-        const isOverdue = !transaction.return_date && now > dueDate
-        
-        return {
-          id: transaction.id,
-          book_title: transaction.library_books?.title || '',
-          student_name: transaction.students?.users?.full_name || '',
-          student_id: transaction.students?.student_id || '',
-          issue_date: new Date(transaction.issue_date),
-          due_date: dueDate,
-          return_date: transaction.return_date ? new Date(transaction.return_date) : null,
-          status: transaction.return_date ? 'returned' : (isOverdue ? 'overdue' : 'active'),
-          fine_amount: transaction.fine_amount || 0,
-        }
-      }) || []
+      const transformedTransactions: Transaction[] =
+        data?.map((transaction: any) => {
+          const now = new Date()
+          const dueDate = new Date(transaction.due_date)
+          const isOverdue = !transaction.return_date && now > dueDate
+
+          return {
+            id: transaction.id,
+            book_title: transaction.library_books?.title || '',
+            student_name: transaction.students?.users?.full_name || '',
+            student_id: transaction.students?.student_id || '',
+            issue_date: new Date(transaction.issue_date),
+            due_date: dueDate,
+            return_date: transaction.return_date ? new Date(transaction.return_date) : null,
+            status: transaction.return_date ? 'returned' : isOverdue ? 'overdue' : 'active',
+            fine_amount: transaction.fine_amount || 0,
+          }
+        }) || []
 
       setTransactions(transformedTransactions)
     } catch (error: any) {
@@ -155,7 +158,7 @@ export default function LibraryPage() {
     totalBooks: books.reduce((sum, b) => sum + b.total_copies, 0),
     availableBooks: books.reduce((sum, b) => sum + b.available_copies, 0),
     issuedBooks: books.reduce((sum, b) => sum + (b.total_copies - b.available_copies), 0),
-    overdueBooks: transactions.filter(t => t.status === 'overdue').length,
+    overdueBooks: transactions.filter((t) => t.status === 'overdue').length,
   }
 
   return (
@@ -287,9 +290,11 @@ export default function LibraryPage() {
                   <Table.Tbody>
                     {books
                       .filter((book) => {
-                        const matchesSearch = 
+                        const matchesSearch =
                           book.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                          book.authors.some(a => a.toLowerCase().includes(searchQuery.toLowerCase())) ||
+                          book.authors.some((a) =>
+                            a.toLowerCase().includes(searchQuery.toLowerCase())
+                          ) ||
                           book.isbn.includes(searchQuery)
                         const matchesCategory = !filterCategory || book.category === filterCategory
                         return matchesSearch && matchesCategory
@@ -297,17 +302,19 @@ export default function LibraryPage() {
                       .map((book) => (
                         <Table.Tr key={book.id}>
                           <Table.Td>
-                            <Text size="sm" fw={500}>{book.title}</Text>
-                            <Text size="xs" color="dimmed">Year: {book.publication_year}</Text>
+                            <Text size="sm" fw={500}>
+                              {book.title}
+                            </Text>
+                            <Text size="xs" color="dimmed">
+                              Year: {book.publication_year}
+                            </Text>
                           </Table.Td>
                           <Table.Td>
                             <Text size="sm">{book.authors.join(', ')}</Text>
                           </Table.Td>
                           <Table.Td>{book.isbn}</Table.Td>
                           <Table.Td>
-                            <Badge variant="light">
-                              {book.category}
-                            </Badge>
+                            <Badge variant="light">{book.category}</Badge>
                           </Table.Td>
                           <Table.Td>{book.location}</Table.Td>
                           <Table.Td>
@@ -352,18 +359,23 @@ export default function LibraryPage() {
                   </Table.Thead>
                   <Table.Tbody>
                     {transactions
-                      .filter(t => t.status !== 'returned')
+                      .filter((t) => t.status !== 'returned')
                       .map((transaction) => (
                         <Table.Tr key={transaction.id}>
                           <Table.Td>{transaction.book_title}</Table.Td>
                           <Table.Td>
                             <Group gap="sm">
                               <Avatar size="sm" radius="xl">
-                                {transaction.student_name.split(' ').map(n => n[0]).join('')}
+                                {transaction.student_name
+                                  .split(' ')
+                                  .map((n) => n[0])
+                                  .join('')}
                               </Avatar>
                               <div>
                                 <Text size="sm">{transaction.student_name}</Text>
-                                <Text size="xs" color="dimmed">{transaction.student_id}</Text>
+                                <Text size="xs" color="dimmed">
+                                  {transaction.student_id}
+                                </Text>
                               </div>
                             </Group>
                           </Table.Td>
@@ -418,10 +430,11 @@ export default function LibraryPage() {
                   </Table.Thead>
                   <Table.Tbody>
                     {transactions
-                      .filter(t => t.status === 'overdue')
+                      .filter((t) => t.status === 'overdue')
                       .map((transaction) => {
                         const daysOverdue = Math.floor(
-                          (new Date().getTime() - transaction.due_date.getTime()) / (1000 * 3600 * 24)
+                          (new Date().getTime() - transaction.due_date.getTime()) /
+                            (1000 * 3600 * 24)
                         )
                         return (
                           <Table.Tr key={transaction.id}>
@@ -429,11 +442,16 @@ export default function LibraryPage() {
                             <Table.Td>
                               <Group gap="sm">
                                 <Avatar size="sm" radius="xl">
-                                  {transaction.student_name.split(' ').map(n => n[0]).join('')}
+                                  {transaction.student_name
+                                    .split(' ')
+                                    .map((n) => n[0])
+                                    .join('')}
                                 </Avatar>
                                 <div>
                                   <Text size="sm">{transaction.student_name}</Text>
-                                  <Text size="xs" color="dimmed">{transaction.student_id}</Text>
+                                  <Text size="xs" color="dimmed">
+                                    {transaction.student_id}
+                                  </Text>
                                 </div>
                               </Group>
                             </Table.Td>
@@ -471,68 +489,65 @@ export default function LibraryPage() {
         title="Add New Book"
         size="lg"
       >
-        <form onSubmit={async (e) => {
-          e.preventDefault()
-          const formData = new FormData(e.currentTarget)
-          
-          try {
-            const bookData = {
-              title: formData.get('title') as string,
-              authors: formData.get('authors')?.toString().split(',').map(a => a.trim()) || [],
-              isbn: formData.get('isbn') as string,
-              category: formData.get('category') as string,
-              total_copies: Number(formData.get('total_copies')),
-              available_copies: Number(formData.get('total_copies')), // Initially all copies are available
-              location: formData.get('location') as string,
-              publication_year: Number(formData.get('publication_year')),
+        <form
+          onSubmit={async (e) => {
+            e.preventDefault()
+            const formData = new FormData(e.currentTarget)
+
+            try {
+              const bookData = {
+                title: formData.get('title') as string,
+                authors:
+                  formData
+                    .get('authors')
+                    ?.toString()
+                    .split(',')
+                    .map((a) => a.trim()) || [],
+                isbn: formData.get('isbn') as string,
+                category: formData.get('category') as string,
+                total_copies: Number(formData.get('total_copies')),
+                available_copies: Number(formData.get('total_copies')), // Initially all copies are available
+                location: formData.get('location') as string,
+                publication_year: Number(formData.get('publication_year')),
+              }
+
+              // Save to Supabase
+              const { data, error } = await supabase
+                .from('library_books')
+                .insert(bookData)
+                .select()
+                .single()
+
+              if (error) throw error
+
+              // Refresh the books list
+              await fetchBooks()
+              setAddBookModalOpened(false)
+
+              notifications.show({
+                title: 'Success',
+                message: 'Book added successfully!',
+                color: 'green',
+              })
+            } catch (error: any) {
+              console.error('Error adding book:', error)
+              notifications.show({
+                title: 'Error',
+                message: error.message || 'Failed to add book',
+                color: 'red',
+              })
             }
-            
-            // Save to Supabase
-            const { data, error } = await supabase
-              .from('library_books')
-              .insert(bookData)
-              .select()
-              .single()
-            
-            if (error) throw error
-            
-            // Refresh the books list
-            await fetchBooks()
-            setAddBookModalOpened(false)
-            
-            notifications.show({
-              title: 'Success',
-              message: 'Book added successfully!',
-              color: 'green',
-            })
-          } catch (error: any) {
-            console.error('Error adding book:', error)
-            notifications.show({
-              title: 'Error',
-              message: error.message || 'Failed to add book',
-              color: 'red',
-            })
-          }
-        }}>
+          }}
+        >
           <Stack>
-            <TextInput
-              label="Book Title"
-              placeholder="Enter book title"
-              name="title"
-              required
-            />
+            <TextInput label="Book Title" placeholder="Enter book title" name="title" required />
             <TextInput
               label="Authors"
               placeholder="Enter authors (comma separated)"
               name="authors"
               required
             />
-            <TextInput
-              label="ISBN"
-              placeholder="Enter ISBN"
-              name="isbn"
-              required
-            />
+            <TextInput label="ISBN" placeholder="Enter ISBN" name="isbn" required />
             <Select
               label="Category"
               placeholder="Select category"
@@ -571,9 +586,7 @@ export default function LibraryPage() {
               <Button variant="light" onClick={() => setAddBookModalOpened(false)}>
                 Cancel
               </Button>
-              <Button type="submit">
-                Add Book
-              </Button>
+              <Button type="submit">Add Book</Button>
             </Group>
           </Stack>
         </form>

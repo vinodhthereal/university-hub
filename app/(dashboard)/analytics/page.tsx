@@ -32,12 +32,7 @@ import {
   Legend,
 } from 'recharts'
 import { createClient } from '@/lib/supabase/client'
-import {
-  IconUsers,
-  IconTrendingUp,
-  IconSchool,
-  IconCash,
-} from '@tabler/icons-react'
+import { IconUsers, IconTrendingUp, IconSchool, IconCash } from '@tabler/icons-react'
 
 export default function AnalyticsPage() {
   const [timeRange, setTimeRange] = useState<string>('month')
@@ -92,7 +87,7 @@ export default function AnalyticsPage() {
               { value: 'year', label: 'Last Year' },
             ]}
             value={timeRange}
-            onChange={setTimeRange || (() => {})}
+            onChange={(value) => setTimeRange(value || '')}
             style={{ width: 150 }}
           />
           <Select
@@ -184,19 +179,16 @@ export default function AnalyticsPage() {
       <Grid gutter="lg">
         <Grid.Col span={{ base: 12, md: 8 }}>
           <Paper p="lg" radius="md" withBorder>
-            <Title order={4} mb="md">Attendance Trends</Title>
+            <Title order={4} mb="md">
+              Attendance Trends
+            </Title>
             <ResponsiveContainer width="100%" height={300}>
               <AreaChart data={attendanceData}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="month" />
                 <YAxis />
                 <Tooltip />
-                <Area 
-                  type="monotone" 
-                  dataKey="attendance" 
-                  stroke="#3b82f6" 
-                  fill="#93c5fd" 
-                />
+                <Area type="monotone" dataKey="attendance" stroke="#3b82f6" fill="#93c5fd" />
               </AreaChart>
             </ResponsiveContainer>
           </Paper>
@@ -204,7 +196,9 @@ export default function AnalyticsPage() {
 
         <Grid.Col span={{ base: 12, md: 4 }}>
           <Paper p="lg" radius="md" withBorder h="100%">
-            <Title order={4} mb="md">Grade Distribution</Title>
+            <Title order={4} mb="md">
+              Grade Distribution
+            </Title>
             <ResponsiveContainer width="100%" height={250}>
               <PieChart>
                 <Pie
@@ -231,7 +225,9 @@ export default function AnalyticsPage() {
       <Grid gutter="lg" mt="lg">
         <Grid.Col span={{ base: 12, md: 6 }}>
           <Paper p="lg" radius="md" withBorder>
-            <Title order={4} mb="md">Department Performance</Title>
+            <Title order={4} mb="md">
+              Department Performance
+            </Title>
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={departmentPerformance}>
                 <CartesianGrid strokeDasharray="3 3" />
@@ -248,7 +244,9 @@ export default function AnalyticsPage() {
 
         <Grid.Col span={{ base: 12, md: 6 }}>
           <Paper p="lg" radius="md" withBorder>
-            <Title order={4} mb="md">Fee Collection Analysis</Title>
+            <Title order={4} mb="md">
+              Fee Collection Analysis
+            </Title>
             <ResponsiveContainer width="100%" height={300}>
               <LineChart data={feeCollection}>
                 <CartesianGrid strokeDasharray="3 3" />
@@ -256,18 +254,8 @@ export default function AnalyticsPage() {
                 <YAxis />
                 <Tooltip />
                 <Legend />
-                <Line 
-                  type="monotone" 
-                  dataKey="collected" 
-                  stroke="#10b981" 
-                  name="Collected"
-                />
-                <Line 
-                  type="monotone" 
-                  dataKey="pending" 
-                  stroke="#ef4444" 
-                  name="Pending"
-                />
+                <Line type="monotone" dataKey="collected" stroke="#10b981" name="Collected" />
+                <Line type="monotone" dataKey="pending" stroke="#ef4444" name="Pending" />
               </LineChart>
             </ResponsiveContainer>
           </Paper>
@@ -277,25 +265,41 @@ export default function AnalyticsPage() {
       <Grid gutter="lg" mt="lg">
         <Grid.Col span={{ base: 12 }}>
           <Paper p="lg" radius="md" withBorder>
-            <Title order={4} mb="md">Department-wise Metrics</Title>
+            <Title order={4} mb="md">
+              Department-wise Metrics
+            </Title>
             <SimpleGrid cols={{ base: 1, sm: 2, md: 4 }} spacing="lg">
               {departmentPerformance.map((dept) => (
                 <Card key={dept.name} withBorder p="md">
-                  <Text size="sm" fw={600} mb="xs">{dept.name}</Text>
+                  <Text size="sm" fw={600} mb="xs">
+                    {dept.name}
+                  </Text>
                   <Stack gap="xs">
                     <div>
-                      <Text size="xs" color="dimmed">Students</Text>
-                      <Text size="lg" fw={600}>{dept.students}</Text>
+                      <Text size="xs" color="dimmed">
+                        Students
+                      </Text>
+                      <Text size="lg" fw={600}>
+                        {dept.students}
+                      </Text>
                     </div>
                     <div>
-                      <Text size="xs" color="dimmed">Average GPA</Text>
+                      <Text size="xs" color="dimmed">
+                        Average GPA
+                      </Text>
                       <Progress value={dept.avgGPA * 10} color="blue" size="lg" />
-                      <Text size="xs" mt={2}>{dept.avgGPA}/10</Text>
+                      <Text size="xs" mt={2}>
+                        {dept.avgGPA}/10
+                      </Text>
                     </div>
                     <div>
-                      <Text size="xs" color="dimmed">Placement Rate</Text>
+                      <Text size="xs" color="dimmed">
+                        Placement Rate
+                      </Text>
                       <Progress value={dept.placement} color="green" size="lg" />
-                      <Text size="xs" mt={2}>{dept.placement}%</Text>
+                      <Text size="xs" mt={2}>
+                        {dept.placement}%
+                      </Text>
                     </div>
                   </Stack>
                 </Card>

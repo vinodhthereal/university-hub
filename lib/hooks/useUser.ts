@@ -16,15 +16,17 @@ export function useUser() {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const { data: { user: authUser } } = await supabase.auth.getUser()
-        
+        const {
+          data: { user: authUser },
+        } = await supabase.auth.getUser()
+
         if (authUser) {
           const { data: userData } = await supabase
             .from('users')
             .select('*')
             .eq('id', authUser.id)
             .single()
-          
+
           if (userData) {
             setUser({ ...authUser, ...userData })
           } else {
@@ -40,14 +42,16 @@ export function useUser() {
 
     fetchUser()
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (event === 'SIGNED_IN' && session?.user) {
         const { data: userData } = await supabase
           .from('users')
           .select('*')
           .eq('id', session.user.id)
           .single()
-        
+
         if (userData) {
           setUser({ ...session.user, ...userData })
         } else {

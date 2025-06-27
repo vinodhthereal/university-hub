@@ -3,7 +3,18 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { TextInput, PasswordInput, Button, Paper, Title, Text, Stack, Group, Divider, Alert } from '@mantine/core'
+import {
+  TextInput,
+  PasswordInput,
+  Button,
+  Paper,
+  Title,
+  Text,
+  Stack,
+  Group,
+  Divider,
+  Alert,
+} from '@mantine/core'
 import { useForm } from '@mantine/form'
 import { notifications } from '@mantine/notifications'
 import { createClient } from '@/lib/supabase/client'
@@ -14,15 +25,16 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const supabase = createClient()
-  
+
   const form = useForm({
     initialValues: {
       email: '',
       password: '',
     },
     validate: {
-      email: (value) => (/^\S+@\S+$/.test(value) ? null : 'Invalid email'),
-      password: (value) => (value.length >= 6 ? null : 'Password must be at least 6 characters'),
+      email: (value: string) => (/^\S+@\S+$/.test(value) ? null : 'Invalid email'),
+      password: (value: string) =>
+        value.length >= 6 ? null : 'Password must be at least 6 characters',
     },
   })
 
@@ -44,7 +56,7 @@ export default function LoginPage() {
           message: 'Logged in successfully!',
           color: 'green',
         })
-        
+
         router.push('/dashboard')
         router.refresh()
       }
@@ -62,12 +74,12 @@ export default function LoginPage() {
 
   return (
     <Paper className="w-full max-w-md p-8 rounded-xl shadow-xl">
-      <Stack spacing="md">
+      <Stack gap="md">
         <div>
-          <Title order={2} align="center" mb={5}>
+          <Title order={2} ta="center" mb={5}>
             Welcome back
           </Title>
-          <Text color="dimmed" size="sm" align="center">
+          <Text color="dimmed" size="sm" ta="center">
             Login to University Hub
           </Text>
         </div>
@@ -79,7 +91,7 @@ export default function LoginPage() {
         )}
 
         <form onSubmit={form.onSubmit(handleSubmit)}>
-          <Stack spacing="md">
+          <Stack gap="md">
             <TextInput
               label="Email"
               placeholder="your@email.com"
@@ -92,8 +104,8 @@ export default function LoginPage() {
               required
               {...form.getInputProps('password')}
             />
-            
-            <Group position="apart" mt="xs">
+
+            <Group justify="space-between" mt="xs">
               <Text size="sm">
                 Don't have an account?{' '}
                 <Link href="/register" className="text-primary-600 hover:underline">
@@ -114,8 +126,8 @@ export default function LoginPage() {
         <Divider label="Or continue with" labelPosition="center" my="lg" />
 
         <Group grow>
-          <Button 
-            variant="outline" 
+          <Button
+            variant="outline"
             onClick={() => {
               notifications.show({
                 message: 'SSO integration coming soon!',

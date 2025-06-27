@@ -87,14 +87,16 @@ export default function OutpassPage() {
   }, [activeTab])
 
   const fetchUserRole = async () => {
-    const { data: { user } } = await supabase.auth.getUser()
+    const {
+      data: { user },
+    } = await supabase.auth.getUser()
     if (user) {
       const { data: userData } = await supabase
         .from('users')
         .select('role')
         .eq('id', user.id)
         .single()
-      
+
       if (userData) {
         setUserRole(userData.role)
       }
@@ -168,14 +170,14 @@ export default function OutpassPage() {
           },
         },
       ]
-      
-      const filteredByTab = mockRequests.filter(request => {
+
+      const filteredByTab = mockRequests.filter((request) => {
         if (activeTab === 'pending') return request.status === 'pending'
         if (activeTab === 'approved') return request.status === 'approved'
         if (activeTab === 'rejected') return request.status === 'rejected'
         return true
       })
-      
+
       setOutpassRequests(filteredByTab)
     } catch (error) {
       notifications.show({
@@ -197,11 +199,7 @@ export default function OutpassPage() {
           <Text size="sm">
             Are you sure you want to approve the outpass request for {request.student_name}?
           </Text>
-          <Textarea
-            placeholder="Add remarks (optional)"
-            label="Remarks"
-            minRows={3}
-          />
+          <Textarea placeholder="Add remarks (optional)" label="Remarks" minRows={3} />
         </Stack>
       ),
       labels: { confirm: 'Approve', cancel: 'Cancel' },
@@ -267,19 +265,24 @@ export default function OutpassPage() {
 
   const getStatusColor = (status: OutpassRequest['status']) => {
     switch (status) {
-      case 'approved': return 'green'
-      case 'rejected': return 'red'
-      case 'pending': return 'yellow'
-      case 'expired': return 'gray'
-      default: return 'gray'
+      case 'approved':
+        return 'green'
+      case 'rejected':
+        return 'red'
+      case 'pending':
+        return 'yellow'
+      case 'expired':
+        return 'gray'
+      default:
+        return 'gray'
     }
   }
 
   const stats = {
     total: outpassRequests.length,
-    pending: outpassRequests.filter(r => r.status === 'pending').length,
-    approved: outpassRequests.filter(r => r.status === 'approved').length,
-    rejected: outpassRequests.filter(r => r.status === 'rejected').length,
+    pending: outpassRequests.filter((r) => r.status === 'pending').length,
+    approved: outpassRequests.filter((r) => r.status === 'approved').length,
+    rejected: outpassRequests.filter((r) => r.status === 'rejected').length,
   }
 
   return (
@@ -291,10 +294,7 @@ export default function OutpassPage() {
             Export Report
           </Button>
           {userRole === 'student' && (
-            <Button
-              leftSection={<IconPlus size={16} />}
-              onClick={() => setCreateModalOpened(true)}
-            >
+            <Button leftSection={<IconPlus size={16} />} onClick={() => setCreateModalOpened(true)}>
               Request Out-Pass
             </Button>
           )}
@@ -385,19 +385,25 @@ export default function OutpassPage() {
                 </Table.Thead>
                 <Table.Tbody>
                   {outpassRequests
-                    .filter(request =>
-                      request.student_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                      request.student_id.toLowerCase().includes(searchQuery.toLowerCase())
+                    .filter(
+                      (request) =>
+                        request.student_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                        request.student_id.toLowerCase().includes(searchQuery.toLowerCase())
                     )
                     .map((request) => (
                       <Table.Tr key={request.id}>
                         <Table.Td>
                           <Group gap="sm">
                             <Avatar size="sm" radius="xl">
-                              {request.student_name.split(' ').map(n => n[0]).join('')}
+                              {request.student_name
+                                .split(' ')
+                                .map((n) => n[0])
+                                .join('')}
                             </Avatar>
                             <div>
-                              <Text size="sm" fw={500}>{request.student_name}</Text>
+                              <Text size="sm" fw={500}>
+                                {request.student_name}
+                              </Text>
                               <Text size="xs" color="dimmed">
                                 {request.course} | Room {request.room_no}
                               </Text>
@@ -416,12 +422,17 @@ export default function OutpassPage() {
                         </Table.Td>
                         <Table.Td>
                           <Stack gap={0}>
-                            <Text size="xs">
-                              {request.from_datetime.toLocaleDateString()}
-                            </Text>
+                            <Text size="xs">{request.from_datetime.toLocaleDateString()}</Text>
                             <Text size="xs" color="dimmed">
-                              {request.from_datetime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} - 
-                              {request.to_datetime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                              {request.from_datetime.toLocaleTimeString([], {
+                                hour: '2-digit',
+                                minute: '2-digit',
+                              })}{' '}
+                              -
+                              {request.to_datetime.toLocaleTimeString([], {
+                                hour: '2-digit',
+                                minute: '2-digit',
+                              })}
                             </Text>
                           </Stack>
                         </Table.Td>
@@ -487,7 +498,10 @@ export default function OutpassPage() {
             <Group justify="space-between">
               <Group>
                 <Avatar size="lg" radius="xl">
-                  {selectedRequest.student_name.split(' ').map(n => n[0]).join('')}
+                  {selectedRequest.student_name
+                    .split(' ')
+                    .map((n) => n[0])
+                    .join('')}
                 </Avatar>
                 <div>
                   <Text fw={600}>{selectedRequest.student_name}</Text>
@@ -502,34 +516,43 @@ export default function OutpassPage() {
             </Group>
 
             <Paper withBorder p="md">
-              <Stack spacing="sm">
+              <Stack gap="sm">
                 <Group>
                   <IconFileText size={20} />
                   <div>
-                    <Text size="xs" color="dimmed">Purpose</Text>
+                    <Text size="xs" color="dimmed">
+                      Purpose
+                    </Text>
                     <Text size="sm">{selectedRequest.purpose}</Text>
                   </div>
                 </Group>
                 <Group>
                   <IconMapPin size={20} />
                   <div>
-                    <Text size="xs" color="dimmed">Destination</Text>
+                    <Text size="xs" color="dimmed">
+                      Destination
+                    </Text>
                     <Text size="sm">{selectedRequest.destination}</Text>
                   </div>
                 </Group>
                 <Group>
                   <IconCalendar size={20} />
                   <div>
-                    <Text size="xs" color="dimmed">Duration</Text>
+                    <Text size="xs" color="dimmed">
+                      Duration
+                    </Text>
                     <Text size="sm">
-                      {selectedRequest.from_datetime.toLocaleString()} - {selectedRequest.to_datetime.toLocaleString()}
+                      {selectedRequest.from_datetime.toLocaleString()} -{' '}
+                      {selectedRequest.to_datetime.toLocaleString()}
                     </Text>
                   </div>
                 </Group>
                 <Group>
                   <IconPhone size={20} />
                   <div>
-                    <Text size="xs" color="dimmed">Contact During Leave</Text>
+                    <Text size="xs" color="dimmed">
+                      Contact During Leave
+                    </Text>
                     <Text size="sm">{selectedRequest.contact_during_leave}</Text>
                   </div>
                 </Group>
@@ -537,15 +560,12 @@ export default function OutpassPage() {
             </Paper>
 
             <Timeline active={1} bulletSize={24} lineWidth={2}>
-              <Timeline.Item
-                bullet={<IconUser size={12} />}
-                title="Request Submitted"
-              >
+              <Timeline.Item bullet={<IconUser size={12} />} title="Request Submitted">
                 <Text color="dimmed" size="sm">
                   {selectedRequest.created_at.toLocaleString()}
                 </Text>
               </Timeline.Item>
-              
+
               {selectedRequest.warden_approval && (
                 <Timeline.Item
                   bullet={
@@ -562,8 +582,8 @@ export default function OutpassPage() {
                     selectedRequest.warden_approval.status === 'approved'
                       ? 'green'
                       : selectedRequest.warden_approval.status === 'rejected'
-                      ? 'red'
-                      : 'yellow'
+                        ? 'red'
+                        : 'yellow'
                   }
                 >
                   <Text color="dimmed" size="sm">
@@ -600,8 +620,8 @@ export default function OutpassPage() {
                     selectedRequest.hod_approval.status === 'approved'
                       ? 'green'
                       : selectedRequest.hod_approval.status === 'rejected'
-                      ? 'red'
-                      : 'yellow'
+                        ? 'red'
+                        : 'yellow'
                   }
                 >
                   <Text color="dimmed" size="sm">

@@ -56,7 +56,7 @@ export default function FacultyPage() {
   const [selectedFaculty, setSelectedFaculty] = useState<Faculty | null>(null)
   const [viewModalOpened, setViewModalOpened] = useState(false)
   const [createModalOpened, setCreateModalOpened] = useState(false)
-  
+
   const supabase = createClient()
 
   useEffect(() => {
@@ -149,19 +149,20 @@ export default function FacultyPage() {
   }
 
   const filteredFaculty = faculty.filter((member) => {
-    const matchesSearch = member.full_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         member.employee_id.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         member.email.toLowerCase().includes(searchQuery.toLowerCase())
+    const matchesSearch =
+      member.full_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      member.employee_id.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      member.email.toLowerCase().includes(searchQuery.toLowerCase())
     const matchesDepartment = !filterDepartment || member.department === filterDepartment
-    
+
     return matchesSearch && matchesDepartment
   })
 
   const stats = {
     total: faculty.length,
-    professors: faculty.filter(f => f.designation === 'Professor').length,
-    associateProfessors: faculty.filter(f => f.designation === 'Associate Professor').length,
-    assistantProfessors: faculty.filter(f => f.designation === 'Assistant Professor').length,
+    professors: faculty.filter((f) => f.designation === 'Professor').length,
+    associateProfessors: faculty.filter((f) => f.designation === 'Associate Professor').length,
+    assistantProfessors: faculty.filter((f) => f.designation === 'Assistant Professor').length,
   }
 
   return (
@@ -265,11 +266,18 @@ export default function FacultyPage() {
                   <Table.Td>
                     <Group gap="sm">
                       <Avatar size="sm" radius="xl">
-                        {member.full_name.split(' ').map(n => n[0]).join('')}
+                        {member.full_name
+                          .split(' ')
+                          .map((n) => n[0])
+                          .join('')}
                       </Avatar>
                       <div>
-                        <Text size="sm" fw={500}>{member.full_name}</Text>
-                        <Text size="xs" color="dimmed">{member.email}</Text>
+                        <Text size="sm" fw={500}>
+                          {member.full_name}
+                        </Text>
+                        <Text size="xs" color="dimmed">
+                          {member.email}
+                        </Text>
                       </div>
                     </Group>
                   </Table.Td>
@@ -296,11 +304,7 @@ export default function FacultyPage() {
                       <ActionIcon variant="subtle">
                         <IconEdit size={16} />
                       </ActionIcon>
-                      <ActionIcon
-                        variant="subtle"
-                        color="red"
-                        onClick={() => handleDelete(member)}
-                      >
+                      <ActionIcon variant="subtle" color="red" onClick={() => handleDelete(member)}>
                         <IconTrash size={16} />
                       </ActionIcon>
                     </Group>
@@ -323,43 +327,72 @@ export default function FacultyPage() {
           <Stack>
             <Group justify="center">
               <Avatar size="xl" radius="xl">
-                {selectedFaculty.full_name.split(' ').map(n => n[0]).join('')}
+                {selectedFaculty.full_name
+                  .split(' ')
+                  .map((n) => n[0])
+                  .join('')}
               </Avatar>
             </Group>
-            
+
             <Grid>
               <Grid.Col span={6}>
-                <Text size="sm" color="dimmed">Full Name</Text>
-                <Text size="sm" fw={500}>{selectedFaculty.full_name}</Text>
+                <Text size="sm" color="dimmed">
+                  Full Name
+                </Text>
+                <Text size="sm" fw={500}>
+                  {selectedFaculty.full_name}
+                </Text>
               </Grid.Col>
               <Grid.Col span={6}>
-                <Text size="sm" color="dimmed">Employee ID</Text>
-                <Text size="sm" fw={500}>{selectedFaculty.employee_id}</Text>
+                <Text size="sm" color="dimmed">
+                  Employee ID
+                </Text>
+                <Text size="sm" fw={500}>
+                  {selectedFaculty.employee_id}
+                </Text>
               </Grid.Col>
               <Grid.Col span={6}>
-                <Text size="sm" color="dimmed">Email</Text>
+                <Text size="sm" color="dimmed">
+                  Email
+                </Text>
                 <Group gap="xs">
                   <IconMail size={16} />
-                  <Text size="sm" fw={500}>{selectedFaculty.email}</Text>
+                  <Text size="sm" fw={500}>
+                    {selectedFaculty.email}
+                  </Text>
                 </Group>
               </Grid.Col>
               <Grid.Col span={6}>
-                <Text size="sm" color="dimmed">Phone</Text>
+                <Text size="sm" color="dimmed">
+                  Phone
+                </Text>
                 <Group gap="xs">
                   <IconPhone size={16} />
-                  <Text size="sm" fw={500}>{selectedFaculty.phone}</Text>
+                  <Text size="sm" fw={500}>
+                    {selectedFaculty.phone}
+                  </Text>
                 </Group>
               </Grid.Col>
               <Grid.Col span={6}>
-                <Text size="sm" color="dimmed">Department</Text>
-                <Text size="sm" fw={500}>{selectedFaculty.department}</Text>
+                <Text size="sm" color="dimmed">
+                  Department
+                </Text>
+                <Text size="sm" fw={500}>
+                  {selectedFaculty.department}
+                </Text>
               </Grid.Col>
               <Grid.Col span={6}>
-                <Text size="sm" color="dimmed">Designation</Text>
-                <Text size="sm" fw={500}>{selectedFaculty.designation}</Text>
+                <Text size="sm" color="dimmed">
+                  Designation
+                </Text>
+                <Text size="sm" fw={500}>
+                  {selectedFaculty.designation}
+                </Text>
               </Grid.Col>
               <Grid.Col span={12}>
-                <Text size="sm" color="dimmed">Specializations</Text>
+                <Text size="sm" color="dimmed">
+                  Specializations
+                </Text>
                 <Group gap="xs">
                   {selectedFaculty.specialization.map((spec, index) => (
                     <Badge key={index} variant="light">
@@ -369,11 +402,17 @@ export default function FacultyPage() {
                 </Group>
               </Grid.Col>
               <Grid.Col span={6}>
-                <Text size="sm" color="dimmed">Experience</Text>
-                <Text size="sm" fw={500}>{selectedFaculty.experience_years} years</Text>
+                <Text size="sm" color="dimmed">
+                  Experience
+                </Text>
+                <Text size="sm" fw={500}>
+                  {selectedFaculty.experience_years} years
+                </Text>
               </Grid.Col>
               <Grid.Col span={6}>
-                <Text size="sm" color="dimmed">Status</Text>
+                <Text size="sm" color="dimmed">
+                  Status
+                </Text>
                 <Badge color={selectedFaculty.is_active ? 'green' : 'red'} variant="light">
                   {selectedFaculty.is_active ? 'Active' : 'Inactive'}
                 </Badge>

@@ -11,14 +11,11 @@ const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   title: 'University Hub - Complete Campus Management System',
-  description: 'Manage all university operations in one place - registration, attendance, exams, fees, and more.',
+  description:
+    'Manage all university operations in one place - registration, attendance, exams, fees, and more.',
 }
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <body className={inter.className}>

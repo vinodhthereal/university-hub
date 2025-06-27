@@ -34,12 +34,14 @@ A modern, full-featured university management system built with Next.js 14, Type
 ## Installation
 
 1. **Clone the repository**
+
 ```bash
 git clone <repository-url>
 cd university-hub
 ```
 
 2. **Install dependencies**
+
 ```bash
 npm install
 # or
@@ -47,11 +49,13 @@ pnpm install
 ```
 
 3. **Set up environment variables**
+
 ```bash
 cp .env.local.example .env.local
 ```
 
 Edit `.env.local` with your Supabase credentials:
+
 ```env
 NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
@@ -66,6 +70,7 @@ SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
 - Configure Row Level Security (RLS) policies as needed
 
 5. **Run the development server**
+
 ```bash
 npm run dev
 # or
@@ -105,16 +110,19 @@ For testing purposes, you can create users with these roles:
 ## Key Features Implementation
 
 ### Authentication
+
 - Supabase Auth with email/password
 - Role-based access control
 - Protected routes with middleware
 
 ### Real-time Features
+
 - Live attendance updates
 - Real-time notifications
 - Instant out-pass status updates
 
 ### File Uploads
+
 - Student documents
 - Profile pictures
 - Assignment submissions
@@ -122,17 +130,20 @@ For testing purposes, you can create users with these roles:
 ## Development
 
 ### Code Style
+
 - ESLint configuration included
 - Prettier for code formatting
 - TypeScript strict mode enabled
 
 ### Testing
+
 ```bash
 npm run test
 npm run test:watch
 ```
 
 ### Building for Production
+
 ```bash
 npm run build
 npm run start
@@ -141,12 +152,14 @@ npm run start
 ## Deployment
 
 ### Vercel (Recommended)
+
 1. Push your code to GitHub
 2. Import project in Vercel
 3. Add environment variables
 4. Deploy
 
 ### Docker
+
 ```bash
 docker build -t university-hub .
 docker run -p 3000:3000 university-hub
@@ -155,18 +168,21 @@ docker run -p 3000:3000 university-hub
 ## API Documentation
 
 ### Authentication Endpoints
+
 - `POST /api/auth/login` - User login
 - `POST /api/auth/register` - User registration
 - `POST /api/auth/logout` - User logout
 - `GET /api/auth/user` - Get current user
 
 ### Student Management
+
 - `GET /api/students` - List students
 - `POST /api/students` - Create student
 - `PUT /api/students/:id` - Update student
 - `DELETE /api/students/:id` - Delete student
 
 ### Attendance
+
 - `GET /api/attendance` - Get attendance records
 - `POST /api/attendance` - Mark attendance
 - `PUT /api/attendance/:id` - Update attendance

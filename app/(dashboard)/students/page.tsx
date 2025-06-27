@@ -56,7 +56,7 @@ export default function StudentsPage() {
   const [viewModalOpened, setViewModalOpened] = useState(false)
   const [editModalOpened, setEditModalOpened] = useState(false)
   const [addModalOpened, setAddModalOpened] = useState(false)
-  
+
   const supabase = createClient()
 
   useEffect(() => {
@@ -67,9 +67,7 @@ export default function StudentsPage() {
     setLoading(true)
     try {
       // Fetch students with their user information
-      const { data: studentsData, error } = await supabase
-        .from('students')
-        .select(`
+      const { data: studentsData, error } = await supabase.from('students').select(`
           id,
           student_id,
           batch_year,
@@ -88,17 +86,18 @@ export default function StudentsPage() {
       if (error) throw error
 
       // Transform the data to match our interface
-      const transformedStudents: Student[] = studentsData?.map((student: any) => ({
-        id: student.id,
-        student_id: student.student_id,
-        full_name: student.users?.full_name || '',
-        email: student.users?.email || '',
-        course_name: student.courses?.name || '',
-        semester: student.semester,
-        batch_year: student.batch_year,
-        phone: student.users?.phone || '',
-        is_active: student.users?.is_active ?? true,
-      })) || []
+      const transformedStudents: Student[] =
+        studentsData?.map((student: any) => ({
+          id: student.id,
+          student_id: student.student_id,
+          full_name: student.users?.full_name || '',
+          email: student.users?.email || '',
+          course_name: student.courses?.name || '',
+          semester: student.semester,
+          batch_year: student.batch_year,
+          phone: student.users?.phone || '',
+          is_active: student.users?.is_active ?? true,
+        })) || []
 
       setStudents(transformedStudents)
     } catch (error: any) {
@@ -131,20 +130,17 @@ export default function StudentsPage() {
             .from('students')
             .delete()
             .eq('id', student.id)
-          
+
           if (studentError) throw studentError
-          
+
           // Delete user record
-          const { error: userError } = await supabase
-            .from('users')
-            .delete()
-            .eq('id', student.id)
-          
+          const { error: userError } = await supabase.from('users').delete().eq('id', student.id)
+
           if (userError) throw userError
-          
+
           // Note: Deleting from auth requires admin API or user's own action
           // For now, we'll just mark the user as inactive in the users table
-          
+
           notifications.show({
             title: 'Success',
             message: 'Student deleted successfully',
@@ -164,12 +160,13 @@ export default function StudentsPage() {
   }
 
   const filteredStudents = students.filter((student) => {
-    const matchesSearch = student.full_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         student.student_id.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         student.email.toLowerCase().includes(searchQuery.toLowerCase())
+    const matchesSearch =
+      student.full_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      student.student_id.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      student.email.toLowerCase().includes(searchQuery.toLowerCase())
     const matchesCourse = !filterCourse || student.course_name === filterCourse
     const matchesSemester = !filterSemester || student.semester.toString() === filterSemester
-    
+
     return matchesSearch && matchesCourse && matchesSemester
   })
 
@@ -207,7 +204,7 @@ export default function StudentsPage() {
                 { value: 'Bachelor of Computer Science', label: 'Computer Science' },
                 { value: 'Bachelor of Electronics', label: 'Electronics' },
                 { value: 'Bachelor of Mechanical Engineering', label: 'Mechanical' },
-                { value: 'Bachelor of Civil Engineering', label: 'Civil' }
+                { value: 'Bachelor of Civil Engineering', label: 'Civil' },
               ]}
               value={filterCourse}
               onChange={setFilterCourse}
@@ -248,7 +245,10 @@ export default function StudentsPage() {
                   <Table.Td>
                     <Group gap="sm">
                       <Avatar size="sm" radius="xl">
-                        {student.full_name.split(' ').map(n => n[0]).join('')}
+                        {student.full_name
+                          .split(' ')
+                          .map((n) => n[0])
+                          .join('')}
                       </Avatar>
                       <Text size="sm">{student.full_name}</Text>
                     </Group>
@@ -309,10 +309,13 @@ export default function StudentsPage() {
           <Stack>
             <Group justify="center">
               <Avatar size="xl" radius="xl">
-                {selectedStudent.full_name.split(' ').map(n => n[0]).join('')}
+                {selectedStudent.full_name
+                  .split(' ')
+                  .map((n) => n[0])
+                  .join('')}
               </Avatar>
             </Group>
-            
+
             <Tabs defaultValue="personal">
               <Tabs.List>
                 <Tabs.Tab value="personal">Personal Info</Tabs.Tab>
@@ -323,17 +326,27 @@ export default function StudentsPage() {
               <Tabs.Panel value="personal" pt="xs">
                 <Stack gap="sm" mt="md">
                   <Group justify="space-between">
-                    <Text size="sm" color="dimmed">Full Name</Text>
-                    <Text size="sm" fw={500}>{selectedStudent.full_name}</Text>
+                    <Text size="sm" color="dimmed">
+                      Full Name
+                    </Text>
+                    <Text size="sm" fw={500}>
+                      {selectedStudent.full_name}
+                    </Text>
                   </Group>
                   <Divider />
                   <Group justify="space-between">
-                    <Text size="sm" color="dimmed">Student ID</Text>
-                    <Text size="sm" fw={500}>{selectedStudent.student_id}</Text>
+                    <Text size="sm" color="dimmed">
+                      Student ID
+                    </Text>
+                    <Text size="sm" fw={500}>
+                      {selectedStudent.student_id}
+                    </Text>
                   </Group>
                   <Divider />
                   <Group justify="space-between">
-                    <Text size="sm" color="dimmed">Status</Text>
+                    <Text size="sm" color="dimmed">
+                      Status
+                    </Text>
                     <Badge color={selectedStudent.is_active ? 'green' : 'red'} variant="light">
                       {selectedStudent.is_active ? 'Active' : 'Inactive'}
                     </Badge>
@@ -344,18 +357,30 @@ export default function StudentsPage() {
               <Tabs.Panel value="academic" pt="xs">
                 <Stack gap="sm" mt="md">
                   <Group justify="space-between">
-                    <Text size="sm" color="dimmed">Course</Text>
-                    <Text size="sm" fw={500}>{selectedStudent.course_name}</Text>
+                    <Text size="sm" color="dimmed">
+                      Course
+                    </Text>
+                    <Text size="sm" fw={500}>
+                      {selectedStudent.course_name}
+                    </Text>
                   </Group>
                   <Divider />
                   <Group justify="space-between">
-                    <Text size="sm" color="dimmed">Semester</Text>
-                    <Text size="sm" fw={500}>{selectedStudent.semester}</Text>
+                    <Text size="sm" color="dimmed">
+                      Semester
+                    </Text>
+                    <Text size="sm" fw={500}>
+                      {selectedStudent.semester}
+                    </Text>
                   </Group>
                   <Divider />
                   <Group justify="space-between">
-                    <Text size="sm" color="dimmed">Batch Year</Text>
-                    <Text size="sm" fw={500}>{selectedStudent.batch_year}</Text>
+                    <Text size="sm" color="dimmed">
+                      Batch Year
+                    </Text>
+                    <Text size="sm" fw={500}>
+                      {selectedStudent.batch_year}
+                    </Text>
                   </Group>
                 </Stack>
               </Tabs.Panel>
@@ -363,13 +388,21 @@ export default function StudentsPage() {
               <Tabs.Panel value="contact" pt="xs">
                 <Stack gap="sm" mt="md">
                   <Group justify="space-between">
-                    <Text size="sm" color="dimmed">Email</Text>
-                    <Text size="sm" fw={500}>{selectedStudent.email}</Text>
+                    <Text size="sm" color="dimmed">
+                      Email
+                    </Text>
+                    <Text size="sm" fw={500}>
+                      {selectedStudent.email}
+                    </Text>
                   </Group>
                   <Divider />
                   <Group justify="space-between">
-                    <Text size="sm" color="dimmed">Phone</Text>
-                    <Text size="sm" fw={500}>{selectedStudent.phone}</Text>
+                    <Text size="sm" color="dimmed">
+                      Phone
+                    </Text>
+                    <Text size="sm" fw={500}>
+                      {selectedStudent.phone}
+                    </Text>
                   </Group>
                 </Stack>
               </Tabs.Panel>
@@ -385,43 +418,42 @@ export default function StudentsPage() {
         title="Add New Student"
         size="lg"
       >
-        <form onSubmit={async (e) => {
-          e.preventDefault()
-          const formData = new FormData(e.currentTarget)
-          
-          try {
-            // First, create the auth user
-            const email = formData.get('email') as string
-            const password = formData.get('password') as string
-            const courseName = formData.get('course') as string
-            
-            // Get course ID from course name
-            const { data: courseData, error: courseError } = await supabase
-              .from('courses')
-              .select('id')
-              .eq('name', courseName)
-              .single()
-            
-            if (courseError) throw new Error('Invalid course selected')
-            
-            const { data: authData, error: authError } = await supabase.auth.signUp({
-              email: email,
-              password: password,
-              options: {
-                data: {
-                  full_name: formData.get('full_name'),
-                  role: 'student',
+        <form
+          onSubmit={async (e) => {
+            e.preventDefault()
+            const formData = new FormData(e.currentTarget)
+
+            try {
+              // First, create the auth user
+              const email = formData.get('email') as string
+              const password = formData.get('password') as string
+              const courseName = formData.get('course') as string
+
+              // Get course ID from course name
+              const { data: courseData, error: courseError } = await supabase
+                .from('courses')
+                .select('id')
+                .eq('name', courseName)
+                .single()
+
+              if (courseError) throw new Error('Invalid course selected')
+
+              const { data: authData, error: authError } = await supabase.auth.signUp({
+                email: email,
+                password: password,
+                options: {
+                  data: {
+                    full_name: formData.get('full_name'),
+                    role: 'student',
+                  },
                 },
-              },
-            })
+              })
 
-            if (authError) throw authError
+              if (authError) throw authError
 
-            if (authData.user) {
-              // Create user profile in users table
-              const { error: userError } = await supabase
-                .from('users')
-                .insert({
+              if (authData.user) {
+                // Create user profile in users table
+                const { error: userError } = await supabase.from('users').insert({
                   id: authData.user.id,
                   email: email,
                   full_name: formData.get('full_name') as string,
@@ -430,12 +462,10 @@ export default function StudentsPage() {
                   is_active: true,
                 })
 
-              if (userError) throw userError
+                if (userError) throw userError
 
-              // Create student record
-              const { error: studentError } = await supabase
-                .from('students')
-                .insert({
+                // Create student record
+                const { error: studentError } = await supabase.from('students').insert({
                   id: authData.user.id,
                   student_id: formData.get('student_id') as string,
                   course_id: courseData.id,
@@ -446,27 +476,29 @@ export default function StudentsPage() {
                   emergency_contacts: { contact: formData.get('phone') },
                 })
 
-              if (studentError) throw studentError
+                if (studentError) throw studentError
 
-              // Refresh the students list
-              await fetchStudents()
-              setAddModalOpened(false)
-              
+                // Refresh the students list
+                await fetchStudents()
+                setAddModalOpened(false)
+
+                notifications.show({
+                  title: 'Success',
+                  message:
+                    'Student added successfully! They can now login with their email and password.',
+                  color: 'green',
+                })
+              }
+            } catch (error: any) {
+              console.error('Error adding student:', error)
               notifications.show({
-                title: 'Success',
-                message: 'Student added successfully! They can now login with their email and password.',
-                color: 'green',
+                title: 'Error',
+                message: error.message || 'Failed to add student',
+                color: 'red',
               })
             }
-          } catch (error: any) {
-            console.error('Error adding student:', error)
-            notifications.show({
-              title: 'Error',
-              message: error.message || 'Failed to add student',
-              color: 'red',
-            })
-          }
-        }}>
+          }}
+        >
           <Stack>
             <TextInput
               label="Student ID"
@@ -510,7 +542,7 @@ export default function StudentsPage() {
                 { value: 'Bachelor of Computer Science', label: 'Computer Science' },
                 { value: 'Bachelor of Electronics', label: 'Electronics' },
                 { value: 'Bachelor of Mechanical Engineering', label: 'Mechanical' },
-                { value: 'Bachelor of Civil Engineering', label: 'Civil' }
+                { value: 'Bachelor of Civil Engineering', label: 'Civil' },
               ]}
               required
             />
@@ -544,9 +576,7 @@ export default function StudentsPage() {
               <Button variant="light" onClick={() => setAddModalOpened(false)}>
                 Cancel
               </Button>
-              <Button type="submit">
-                Add Student
-              </Button>
+              <Button type="submit">Add Student</Button>
             </Group>
           </Stack>
         </form>

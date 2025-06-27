@@ -68,7 +68,7 @@ export default function CoursesPage() {
   const [selectedCourse, setSelectedCourse] = useState<Course | null>(null)
   const [viewModalOpened, setViewModalOpened] = useState(false)
   const [createModalOpened, setCreateModalOpened] = useState(false)
-  
+
   const supabase = createClient()
 
   useEffect(() => {
@@ -90,8 +90,22 @@ export default function CoursesPage() {
           total_credits: 180,
           total_students: 240,
           subjects: [
-            { id: '1', code: 'CS101', name: 'Programming Fundamentals', credits: 4, type: 'core', semester: 1 },
-            { id: '2', code: 'CS201', name: 'Data Structures', credits: 4, type: 'core', semester: 3 },
+            {
+              id: '1',
+              code: 'CS101',
+              name: 'Programming Fundamentals',
+              credits: 4,
+              type: 'core',
+              semester: 1,
+            },
+            {
+              id: '2',
+              code: 'CS201',
+              name: 'Data Structures',
+              credits: 4,
+              type: 'core',
+              semester: 3,
+            },
             { id: '3', code: 'CS301', name: 'Algorithms', credits: 4, type: 'core', semester: 4 },
           ],
           is_active: true,
@@ -106,8 +120,22 @@ export default function CoursesPage() {
           total_credits: 180,
           total_students: 180,
           subjects: [
-            { id: '4', code: 'EC101', name: 'Basic Electronics', credits: 4, type: 'core', semester: 1 },
-            { id: '5', code: 'EC201', name: 'Digital Electronics', credits: 4, type: 'core', semester: 3 },
+            {
+              id: '4',
+              code: 'EC101',
+              name: 'Basic Electronics',
+              credits: 4,
+              type: 'core',
+              semester: 1,
+            },
+            {
+              id: '5',
+              code: 'EC201',
+              name: 'Digital Electronics',
+              credits: 4,
+              type: 'core',
+              semester: 3,
+            },
           ],
           is_active: true,
         },
@@ -121,8 +149,22 @@ export default function CoursesPage() {
           total_credits: 90,
           total_students: 60,
           subjects: [
-            { id: '6', code: 'MCS501', name: 'Advanced Algorithms', credits: 4, type: 'core', semester: 1 },
-            { id: '7', code: 'MCS502', name: 'Machine Learning', credits: 4, type: 'elective', semester: 2 },
+            {
+              id: '6',
+              code: 'MCS501',
+              name: 'Advanced Algorithms',
+              credits: 4,
+              type: 'core',
+              semester: 1,
+            },
+            {
+              id: '7',
+              code: 'MCS502',
+              name: 'Machine Learning',
+              credits: 4,
+              type: 'elective',
+              semester: 2,
+            },
           ],
           is_active: true,
         },
@@ -145,7 +187,8 @@ export default function CoursesPage() {
       centered: true,
       children: (
         <Text size="sm">
-          Are you sure you want to delete {course.name}? This will affect {course.total_students} students.
+          Are you sure you want to delete {course.name}? This will affect {course.total_students}{' '}
+          students.
         </Text>
       ),
       labels: { confirm: 'Delete', cancel: 'Cancel' },
@@ -172,28 +215,35 @@ export default function CoursesPage() {
 
   const getDegreeTypeColor = (type: Course['degree_type']) => {
     switch (type) {
-      case 'bachelor': return 'blue'
-      case 'master': return 'green'
-      case 'diploma': return 'yellow'
-      case 'certificate': return 'orange'
-      case 'phd': return 'violet'
-      default: return 'gray'
+      case 'bachelor':
+        return 'blue'
+      case 'master':
+        return 'green'
+      case 'diploma':
+        return 'yellow'
+      case 'certificate':
+        return 'orange'
+      case 'phd':
+        return 'violet'
+      default:
+        return 'gray'
     }
   }
 
   const filteredCourses = courses.filter((course) => {
-    const matchesSearch = course.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         course.code.toLowerCase().includes(searchQuery.toLowerCase())
+    const matchesSearch =
+      course.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      course.code.toLowerCase().includes(searchQuery.toLowerCase())
     const matchesDepartment = !filterDepartment || course.department === filterDepartment
     const matchesDegreeType = !filterDegreeType || course.degree_type === filterDegreeType
-    
+
     return matchesSearch && matchesDepartment && matchesDegreeType
   })
 
   const stats = {
     totalCourses: courses.length,
     totalStudents: courses.reduce((sum, c) => sum + c.total_students, 0),
-    activeCourses: courses.filter(c => c.is_active).length,
+    activeCourses: courses.filter((c) => c.is_active).length,
     totalCredits: courses.reduce((sum, c) => sum + c.total_credits, 0) / courses.length || 0,
   }
 
@@ -360,11 +410,7 @@ export default function CoursesPage() {
                       <ActionIcon variant="subtle">
                         <IconEdit size={16} />
                       </ActionIcon>
-                      <ActionIcon
-                        variant="subtle"
-                        color="red"
-                        onClick={() => handleDelete(course)}
-                      >
+                      <ActionIcon variant="subtle" color="red" onClick={() => handleDelete(course)}>
                         <IconTrash size={16} />
                       </ActionIcon>
                     </Group>
@@ -387,44 +433,74 @@ export default function CoursesPage() {
           <Stack>
             <Grid>
               <Grid.Col span={6}>
-                <Text size="sm" color="dimmed">Course Code</Text>
-                <Text size="sm" fw={500}>{selectedCourse.code}</Text>
+                <Text size="sm" color="dimmed">
+                  Course Code
+                </Text>
+                <Text size="sm" fw={500}>
+                  {selectedCourse.code}
+                </Text>
               </Grid.Col>
               <Grid.Col span={6}>
-                <Text size="sm" color="dimmed">Course Name</Text>
-                <Text size="sm" fw={500}>{selectedCourse.name}</Text>
+                <Text size="sm" color="dimmed">
+                  Course Name
+                </Text>
+                <Text size="sm" fw={500}>
+                  {selectedCourse.name}
+                </Text>
               </Grid.Col>
               <Grid.Col span={6}>
-                <Text size="sm" color="dimmed">Department</Text>
-                <Text size="sm" fw={500}>{selectedCourse.department}</Text>
+                <Text size="sm" color="dimmed">
+                  Department
+                </Text>
+                <Text size="sm" fw={500}>
+                  {selectedCourse.department}
+                </Text>
               </Grid.Col>
               <Grid.Col span={6}>
-                <Text size="sm" color="dimmed">Degree Type</Text>
+                <Text size="sm" color="dimmed">
+                  Degree Type
+                </Text>
                 <Badge color={getDegreeTypeColor(selectedCourse.degree_type)} variant="light">
                   {selectedCourse.degree_type.toUpperCase()}
                 </Badge>
               </Grid.Col>
               <Grid.Col span={4}>
-                <Text size="sm" color="dimmed">Duration</Text>
-                <Text size="sm" fw={500}>{selectedCourse.duration_years} years</Text>
+                <Text size="sm" color="dimmed">
+                  Duration
+                </Text>
+                <Text size="sm" fw={500}>
+                  {selectedCourse.duration_years} years
+                </Text>
               </Grid.Col>
               <Grid.Col span={4}>
-                <Text size="sm" color="dimmed">Total Credits</Text>
-                <Text size="sm" fw={500}>{selectedCourse.total_credits}</Text>
+                <Text size="sm" color="dimmed">
+                  Total Credits
+                </Text>
+                <Text size="sm" fw={500}>
+                  {selectedCourse.total_credits}
+                </Text>
               </Grid.Col>
               <Grid.Col span={4}>
-                <Text size="sm" color="dimmed">Enrolled Students</Text>
-                <Text size="sm" fw={500}>{selectedCourse.total_students}</Text>
+                <Text size="sm" color="dimmed">
+                  Enrolled Students
+                </Text>
+                <Text size="sm" fw={500}>
+                  {selectedCourse.total_students}
+                </Text>
               </Grid.Col>
             </Grid>
 
             <div>
-              <Text size="sm" fw={600} mb="sm">Subjects</Text>
+              <Text size="sm" fw={600} mb="sm">
+                Subjects
+              </Text>
               <Accordion>
-                {[1, 2, 3, 4, 5, 6, 7, 8].map(semester => {
-                  const semesterSubjects = selectedCourse.subjects.filter(s => s.semester === semester)
+                {[1, 2, 3, 4, 5, 6, 7, 8].map((semester) => {
+                  const semesterSubjects = selectedCourse.subjects.filter(
+                    (s) => s.semester === semester
+                  )
                   if (semesterSubjects.length === 0) return null
-                  
+
                   return (
                     <Accordion.Item key={semester} value={`semester-${semester}`}>
                       <Accordion.Control>
@@ -441,15 +517,13 @@ export default function CoursesPage() {
                             </Table.Tr>
                           </Table.Thead>
                           <Table.Tbody>
-                            {semesterSubjects.map(subject => (
+                            {semesterSubjects.map((subject) => (
                               <Table.Tr key={subject.id}>
                                 <Table.Td>{subject.code}</Table.Td>
                                 <Table.Td>{subject.name}</Table.Td>
                                 <Table.Td>{subject.credits}</Table.Td>
                                 <Table.Td>
-                                  <Badge variant="light">
-                                    {subject.type}
-                                  </Badge>
+                                  <Badge variant="light">{subject.type}</Badge>
                                 </Table.Td>
                               </Table.Tr>
                             ))}

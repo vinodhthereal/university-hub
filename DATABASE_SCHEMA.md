@@ -827,7 +827,7 @@ CREATE POLICY "Faculty view department students" ON students
     EXISTS (
       SELECT 1 FROM users u
       JOIN courses c ON c.department_id = u.department_id
-      WHERE u.id = auth.uid() 
+      WHERE u.id = auth.uid()
       AND u.role = 'faculty'
       AND students.course_id = c.id
     )
@@ -837,8 +837,8 @@ CREATE POLICY "Faculty view department students" ON students
 CREATE POLICY "Admins full access" ON students
   FOR ALL USING (
     EXISTS (
-      SELECT 1 FROM users 
-      WHERE id = auth.uid() 
+      SELECT 1 FROM users
+      WHERE id = auth.uid()
       AND role IN ('admin', 'super_admin')
     )
   );
@@ -867,11 +867,11 @@ CREATE OR REPLACE FUNCTION update_room_occupancy()
 RETURNS TRIGGER AS $$
 BEGIN
   IF TG_OP = 'INSERT' THEN
-    UPDATE hostel_rooms 
+    UPDATE hostel_rooms
     SET current_occupancy = current_occupancy + 1
     WHERE id = NEW.room_id;
   ELSIF TG_OP = 'DELETE' OR (TG_OP = 'UPDATE' AND NEW.is_active = false AND OLD.is_active = true) THEN
-    UPDATE hostel_rooms 
+    UPDATE hostel_rooms
     SET current_occupancy = current_occupancy - 1
     WHERE id = OLD.room_id;
   END IF;
@@ -889,7 +889,7 @@ RETURNS DECIMAL AS $$
 DECLARE
   v_sgpa DECIMAL(3,2);
 BEGIN
-  SELECT 
+  SELECT
     SUM(s.credits * r.grade_points) / SUM(s.credits)
   INTO v_sgpa
   FROM results r
@@ -899,14 +899,14 @@ BEGIN
   WHERE r.student_id = p_student_id
   AND e.semester_id = p_semester_id
   AND r.status = 'pass';
-  
+
   RETURN COALESCE(v_sgpa, 0);
 END;
 $$ LANGUAGE plpgsql;
 
 -- Calculate attendance percentage
 CREATE OR REPLACE FUNCTION calculate_attendance_percentage(
-  p_student_id UUID, 
+  p_student_id UUID,
   p_subject_id UUID,
   p_from_date DATE DEFAULT NULL,
   p_to_date DATE DEFAULT NULL
@@ -926,7 +926,7 @@ BEGIN
   AND a.student_id = p_student_id
   AND (p_from_date IS NULL OR ats.session_date >= p_from_date)
   AND (p_to_date IS NULL OR ats.session_date <= p_to_date);
-  
+
   -- Count attended sessions
   SELECT COUNT(*)
   INTO v_attended_sessions
@@ -937,13 +937,13 @@ BEGIN
   AND a.status IN ('present', 'late')
   AND (p_from_date IS NULL OR ats.session_date >= p_from_date)
   AND (p_to_date IS NULL OR ats.session_date <= p_to_date);
-  
+
   IF v_total_sessions = 0 THEN
     RETURN 0;
   END IF;
-  
+
   v_percentage := (v_attended_sessions::DECIMAL / v_total_sessions) * 100;
-  
+
   RETURN ROUND(v_percentage, 2);
 END;
 $$ LANGUAGE plpgsql;
@@ -954,7 +954,7 @@ $$ LANGUAGE plpgsql;
 ```sql
 -- Student Dashboard View
 CREATE VIEW student_dashboard AS
-SELECT 
+SELECT
   s.id,
   s.student_id,
   u.full_name,
@@ -965,16 +965,16 @@ SELECT
   s.batch_year,
   calculate_sgpa(s.id, current_semester_id()) as current_sgpa,
   (
-    SELECT COUNT(*) 
-    FROM outpass_requests 
-    WHERE student_id = s.id 
+    SELECT COUNT(*)
+    FROM outpass_requests
+    WHERE student_id = s.id
     AND status = 'approved'
     AND from_datetime >= NOW() - INTERVAL '30 days'
   ) as recent_outpasses,
   (
-    SELECT SUM(amount_due - amount_paid) 
-    FROM fee_payments 
-    WHERE student_id = s.id 
+    SELECT SUM(amount_due - amount_paid)
+    FROM fee_payments
+    WHERE student_id = s.id
     AND status != 'completed'
   ) as pending_fees
 FROM students s
@@ -984,7 +984,7 @@ JOIN departments d ON d.id = c.department_id;
 
 -- Faculty Workload View
 CREATE VIEW faculty_workload AS
-SELECT 
+SELECT
   f.id,
   f.employee_id,
   u.full_name,
@@ -1021,11 +1021,11 @@ CREATE OR REPLACE FUNCTION backup_critical_data()
 RETURNS void AS $$
 BEGIN
   -- Backup results before new semester
-  CREATE TABLE IF NOT EXISTS backup.results_backup AS 
+  CREATE TABLE IF NOT EXISTS backup.results_backup AS
   SELECT *, NOW() as backup_date FROM results;
-  
+
   -- Backup fee payments monthly
-  CREATE TABLE IF NOT EXISTS backup.fee_payments_backup AS 
+  CREATE TABLE IF NOT EXISTS backup.fee_payments_backup AS
   SELECT *, NOW() as backup_date FROM fee_payments
   WHERE created_at >= NOW() - INTERVAL '1 month';
 END;
@@ -1036,8 +1036,8 @@ CREATE EXTENSION IF NOT EXISTS pg_cron;
 
 -- Clean old notifications
 SELECT cron.schedule('clean-old-notifications', '0 2 * * *', $$
-  DELETE FROM notifications 
-  WHERE created_at < NOW() - INTERVAL '90 days' 
+  DELETE FROM notifications
+  WHERE created_at < NOW() - INTERVAL '90 days'
   AND is_read = true;
 $$);
 

@@ -136,7 +136,7 @@ export default function FeesPage() {
           status: 'pending',
         },
       ]
-      
+
       setFeeRecords(mockRecords)
     } catch (error) {
       notifications.show({
@@ -170,7 +170,7 @@ export default function FeesPage() {
           receipt_no: 'RCP002',
         },
       ]
-      
+
       setPaymentHistory(mockHistory)
     } catch (error) {
       notifications.show({
@@ -201,29 +201,34 @@ export default function FeesPage() {
   }
 
   const filteredRecords = feeRecords.filter((record) => {
-    const matchesSearch = 
+    const matchesSearch =
       record.student_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       record.student_id.toLowerCase().includes(searchQuery.toLowerCase())
     const matchesStatus = !filterStatus || record.status === filterStatus
     const matchesCourse = !filterCourse || record.course === filterCourse
-    
+
     return matchesSearch && matchesStatus && matchesCourse
   })
 
   const stats = {
     totalCollected: feeRecords.reduce((sum, r) => sum + r.paid_amount, 0),
     totalPending: feeRecords.reduce((sum, r) => sum + r.pending_amount, 0),
-    paidStudents: feeRecords.filter(r => r.status === 'paid').length,
-    overdueStudents: feeRecords.filter(r => r.status === 'overdue').length,
+    paidStudents: feeRecords.filter((r) => r.status === 'paid').length,
+    overdueStudents: feeRecords.filter((r) => r.status === 'overdue').length,
   }
 
   const getStatusColor = (status: FeeRecord['status']) => {
     switch (status) {
-      case 'paid': return 'green'
-      case 'partial': return 'yellow'
-      case 'pending': return 'blue'
-      case 'overdue': return 'red'
-      default: return 'gray'
+      case 'paid':
+        return 'green'
+      case 'partial':
+        return 'yellow'
+      case 'pending':
+        return 'blue'
+      case 'overdue':
+        return 'red'
+      default:
+        return 'gray'
     }
   }
 
@@ -365,9 +370,7 @@ export default function FeesPage() {
                   <Table.Td>₹{record.total_fees.toLocaleString()}</Table.Td>
                   <Table.Td>₹{record.paid_amount.toLocaleString()}</Table.Td>
                   <Table.Td>₹{record.pending_amount.toLocaleString()}</Table.Td>
-                  <Table.Td>
-                    {record.due_date.toLocaleDateString()}
-                  </Table.Td>
+                  <Table.Td>{record.due_date.toLocaleDateString()}</Table.Td>
                   <Table.Td>
                     <Badge color={getStatusColor(record.status)} variant="light">
                       {record.status.charAt(0).toUpperCase() + record.status.slice(1)}
@@ -421,13 +424,9 @@ export default function FeesPage() {
             <Alert icon={<IconAlertCircle size={16} />} color="blue">
               Processing payment for {selectedStudent.student_name}
             </Alert>
-            
-            <Text size="sm">
-              Total Fees: ₹{selectedStudent.total_fees.toLocaleString()}
-            </Text>
-            <Text size="sm">
-              Paid Amount: ₹{selectedStudent.paid_amount.toLocaleString()}
-            </Text>
+
+            <Text size="sm">Total Fees: ₹{selectedStudent.total_fees.toLocaleString()}</Text>
+            <Text size="sm">Paid Amount: ₹{selectedStudent.paid_amount.toLocaleString()}</Text>
             <Text size="sm" fw={600}>
               Pending Amount: ₹{selectedStudent.pending_amount.toLocaleString()}
             </Text>
@@ -444,22 +443,11 @@ export default function FeesPage() {
             <Select
               label="Payment Mode"
               placeholder="Select payment mode"
-              data={[
-                'Online Transfer',
-                'Credit Card',
-                'Debit Card',
-                'Cash',
-                'Cheque',
-                'DD',
-              ]}
+              data={['Online Transfer', 'Credit Card', 'Debit Card', 'Cash', 'Cheque', 'DD']}
               required
             />
 
-            <TextInput
-              label="Transaction ID"
-              placeholder="Enter transaction ID"
-              required
-            />
+            <TextInput label="Transaction ID" placeholder="Enter transaction ID" required />
 
             <DatePickerInput
               label="Payment Date"
@@ -472,9 +460,7 @@ export default function FeesPage() {
               <Button variant="light" onClick={() => setPaymentModalOpened(false)}>
                 Cancel
               </Button>
-              <Button onClick={handlePayment}>
-                Process Payment
-              </Button>
+              <Button onClick={handlePayment}>Process Payment</Button>
             </Group>
           </Stack>
         )}
@@ -498,10 +484,12 @@ export default function FeesPage() {
 
             <Progress
               value={(selectedStudent.paid_amount / selectedStudent.total_fees) * 100}
-              label={`${Math.round((selectedStudent.paid_amount / selectedStudent.total_fees) * 100)}%`}
               size="xl"
               radius="xl"
             />
+            <Text size="sm" ta="center" color="dimmed">
+              {Math.round((selectedStudent.paid_amount / selectedStudent.total_fees) * 100)}% paid
+            </Text>
 
             <Timeline active={paymentHistory.length - 1} bulletSize={24} lineWidth={2}>
               {paymentHistory.map((payment, index) => (
@@ -527,9 +515,7 @@ export default function FeesPage() {
               <Button variant="light" leftSection={<IconPrinter size={16} />}>
                 Print Statement
               </Button>
-              <Button onClick={() => setViewModalOpened(false)}>
-                Close
-              </Button>
+              <Button onClick={() => setViewModalOpened(false)}>Close</Button>
             </Group>
           </Stack>
         )}

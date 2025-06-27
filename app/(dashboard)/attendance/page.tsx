@@ -104,7 +104,7 @@ export default function AttendancePage() {
           status: 'present',
         },
       ]
-      
+
       setAttendanceRecords(mockRecords)
       calculateStats(mockRecords)
     } catch (error) {
@@ -132,11 +132,9 @@ export default function AttendancePage() {
 
   const updateAttendance = (studentId: string, status: AttendanceRecord['status']) => {
     setAttendanceRecords((prev) =>
-      prev.map((record) =>
-        record.student_id === studentId ? { ...record, status } : record
-      )
+      prev.map((record) => (record.student_id === studentId ? { ...record, status } : record))
     )
-    
+
     const updatedRecords = attendanceRecords.map((record) =>
       record.student_id === studentId ? { ...record, status } : record
     )
@@ -169,14 +167,14 @@ export default function AttendancePage() {
     }
   }
 
-  const filteredRecords = attendanceRecords.filter((record) =>
-    record.student_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    record.roll_number.includes(searchQuery)
+  const filteredRecords = attendanceRecords.filter(
+    (record) =>
+      record.student_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      record.roll_number.includes(searchQuery)
   )
 
-  const attendancePercentage = stats.total > 0
-    ? Math.round(((stats.present + stats.late) / stats.total) * 100)
-    : 0
+  const attendancePercentage =
+    stats.total > 0 ? Math.round(((stats.present + stats.late) / stats.total) * 100) : 0
 
   return (
     <div>
@@ -207,12 +205,7 @@ export default function AttendancePage() {
           <Select
             label="Select Subject"
             placeholder="Choose a subject"
-            data={[
-              'Data Structures',
-              'Algorithms',
-              'Database Systems',
-              'Operating Systems',
-            ]}
+            data={['Data Structures', 'Algorithms', 'Database Systems', 'Operating Systems']}
             value={selectedSubject}
             onChange={setSelectedSubject}
             required
@@ -344,7 +337,10 @@ export default function AttendancePage() {
                       <Table.Td>
                         <Group gap="sm">
                           <Avatar size="sm" radius="xl">
-                            {record.student_name.split(' ').map(n => n[0]).join('')}
+                            {record.student_name
+                              .split(' ')
+                              .map((n) => n[0])
+                              .join('')}
                           </Avatar>
                           <Text size="sm">{record.student_name}</Text>
                         </Group>
@@ -379,10 +375,10 @@ export default function AttendancePage() {
                             record.status === 'present'
                               ? 'green'
                               : record.status === 'absent'
-                              ? 'red'
-                              : record.status === 'late'
-                              ? 'yellow'
-                              : 'blue'
+                                ? 'red'
+                                : record.status === 'late'
+                                  ? 'yellow'
+                                  : 'blue'
                           }
                           variant="light"
                         >

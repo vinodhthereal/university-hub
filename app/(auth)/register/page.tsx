@@ -3,7 +3,17 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { TextInput, PasswordInput, Button, Paper, Title, Text, Stack, Select, Alert } from '@mantine/core'
+import {
+  TextInput,
+  PasswordInput,
+  Button,
+  Paper,
+  Title,
+  Text,
+  Stack,
+  Select,
+  Alert,
+} from '@mantine/core'
 import { useForm } from '@mantine/form'
 import { notifications } from '@mantine/notifications'
 import { createClient } from '@/lib/supabase/client'
@@ -14,8 +24,17 @@ export default function RegisterPage() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const supabase = createClient()
-  
-  const form = useForm({
+
+  interface FormValues {
+    email: string
+    password: string
+    confirmPassword: string
+    fullName: string
+    role: string
+    phone: string
+  }
+
+  const form = useForm<FormValues>({
     initialValues: {
       email: '',
       password: '',
@@ -25,12 +44,14 @@ export default function RegisterPage() {
       phone: '',
     },
     validate: {
-      email: (value) => (/^\S+@\S+$/.test(value) ? null : 'Invalid email'),
-      password: (value) => (value.length >= 6 ? null : 'Password must be at least 6 characters'),
-      confirmPassword: (value, values) => 
+      email: (value: string) => (/^\S+@\S+$/.test(value) ? null : 'Invalid email'),
+      password: (value: string) =>
+        value.length >= 6 ? null : 'Password must be at least 6 characters',
+      confirmPassword: (value: string, values: FormValues) =>
         value === values.password ? null : 'Passwords do not match',
-      fullName: (value) => (value.trim().length >= 3 ? null : 'Name must be at least 3 characters'),
-      phone: (value) => 
+      fullName: (value: string) =>
+        value.trim().length >= 3 ? null : 'Name must be at least 3 characters',
+      phone: (value: string) =>
         /^[0-9]{10}$/.test(value) ? null : 'Phone number must be 10 digits',
     },
   })
@@ -56,15 +77,13 @@ export default function RegisterPage() {
 
       if (authData.user) {
         // Create user profile
-        const { error: profileError } = await supabase
-          .from('users')
-          .insert({
-            id: authData.user.id,
-            email: values.email,
-            full_name: values.fullName,
-            role: values.role as any,
-            phone: values.phone,
-          })
+        const { error: profileError } = await supabase.from('users').insert({
+          id: authData.user.id,
+          email: values.email,
+          full_name: values.fullName,
+          role: values.role as any,
+          phone: values.phone,
+        })
 
         if (profileError) throw profileError
 
@@ -73,7 +92,7 @@ export default function RegisterPage() {
           message: 'Registration successful! Please check your email to verify your account.',
           color: 'green',
         })
-        
+
         router.push('/login')
       }
     } catch (error: any) {
@@ -90,12 +109,12 @@ export default function RegisterPage() {
 
   return (
     <Paper className="w-full max-w-md p-8 rounded-xl shadow-xl">
-      <Stack spacing="md">
+      <Stack gap="md">
         <div>
-          <Title order={2} align="center" mb={5}>
+          <Title order={2} ta="center" mb={5}>
             Create Account
           </Title>
-          <Text color="dimmed" size="sm" align="center">
+          <Text color="dimmed" size="sm" ta="center">
             Register for University Hub
           </Text>
         </div>
@@ -107,7 +126,7 @@ export default function RegisterPage() {
         )}
 
         <form onSubmit={form.onSubmit(handleSubmit)}>
-          <Stack spacing="md">
+          <Stack gap="md">
             <TextInput
               label="Full Name"
               placeholder="John Doe"
@@ -149,7 +168,7 @@ export default function RegisterPage() {
               required
               {...form.getInputProps('confirmPassword')}
             />
-            
+
             <Text size="sm" mt="xs">
               Already have an account?{' '}
               <Link href="/login" className="text-primary-600 hover:underline">

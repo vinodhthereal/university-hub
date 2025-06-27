@@ -152,20 +152,17 @@ export default function HostelPage() {
     totalRooms: rooms.length,
     totalCapacity: rooms.reduce((sum, r) => sum + r.capacity, 0),
     currentOccupancy: rooms.reduce((sum, r) => sum + r.current_occupancy, 0),
-    availableRooms: rooms.filter(r => r.status === 'available').length,
+    availableRooms: rooms.filter((r) => r.status === 'available').length,
   }
 
-  const occupancyRate = stats.totalCapacity > 0 
-    ? Math.round((stats.currentOccupancy / stats.totalCapacity) * 100)
-    : 0
+  const occupancyRate =
+    stats.totalCapacity > 0 ? Math.round((stats.currentOccupancy / stats.totalCapacity) * 100) : 0
 
   return (
     <div>
       <Group justify="space-between" mb="xl">
         <Title order={2}>Hostel Management</Title>
-        <Button leftSection={<IconHome size={16} />}>
-          Room Allocation
-        </Button>
+        <Button leftSection={<IconHome size={16} />}>Room Allocation</Button>
       </Group>
 
       <Grid gutter="lg" mb="xl">
@@ -296,7 +293,9 @@ export default function HostelPage() {
                   <Table.Tbody>
                     {rooms
                       .filter((room) => {
-                        const matchesSearch = room.room_number.toLowerCase().includes(searchQuery.toLowerCase())
+                        const matchesSearch = room.room_number
+                          .toLowerCase()
+                          .includes(searchQuery.toLowerCase())
                         const matchesBuilding = !filterBuilding || room.building === filterBuilding
                         const matchesStatus = !filterStatus || room.status === filterStatus
                         return matchesSearch && matchesBuilding && matchesStatus
@@ -307,9 +306,7 @@ export default function HostelPage() {
                           <Table.Td>{room.building}</Table.Td>
                           <Table.Td>{room.floor}</Table.Td>
                           <Table.Td>
-                            <Badge variant="light">
-                              {room.room_type}
-                            </Badge>
+                            <Badge variant="light">{room.room_type}</Badge>
                           </Table.Td>
                           <Table.Td>
                             <Text size="sm">
@@ -322,8 +319,8 @@ export default function HostelPage() {
                                 room.status === 'available'
                                   ? 'green'
                                   : room.status === 'full'
-                                  ? 'red'
-                                  : 'yellow'
+                                    ? 'red'
+                                    : 'yellow'
                               }
                               variant="light"
                             >
@@ -368,7 +365,10 @@ export default function HostelPage() {
                         <Table.Td>
                           <Group gap="sm">
                             <Avatar size="sm" radius="xl">
-                              {allocation.student_name.split(' ').map(n => n[0]).join('')}
+                              {allocation.student_name
+                                .split(' ')
+                                .map((n) => n[0])
+                                .join('')}
                             </Avatar>
                             <Text size="sm">{allocation.student_name}</Text>
                           </Group>

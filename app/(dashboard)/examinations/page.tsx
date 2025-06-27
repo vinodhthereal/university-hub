@@ -98,14 +98,16 @@ export default function ExaminationsPage() {
   }, [])
 
   const fetchUserRole = async () => {
-    const { data: { user } } = await supabase.auth.getUser()
+    const {
+      data: { user },
+    } = await supabase.auth.getUser()
     if (user) {
       const { data: userData } = await supabase
         .from('users')
         .select('role')
         .eq('id', user.id)
         .single()
-      
+
       if (userData) {
         setUserRole(userData.role)
       }
@@ -175,7 +177,7 @@ export default function ExaminationsPage() {
           ],
         },
       ]
-      
+
       setExaminations(mockExams)
     } catch (error) {
       notifications.show({
@@ -226,7 +228,7 @@ export default function ExaminationsPage() {
           status: 'fail',
         },
       ]
-      
+
       setResults(mockResults)
     } catch (error) {
       notifications.show({
@@ -239,31 +241,43 @@ export default function ExaminationsPage() {
 
   const getStatusColor = (status: Examination['status']) => {
     switch (status) {
-      case 'upcoming': return 'blue'
-      case 'ongoing': return 'yellow'
-      case 'completed': return 'green'
-      case 'results_declared': return 'violet'
-      default: return 'gray'
+      case 'upcoming':
+        return 'blue'
+      case 'ongoing':
+        return 'yellow'
+      case 'completed':
+        return 'green'
+      case 'results_declared':
+        return 'violet'
+      default:
+        return 'gray'
     }
   }
 
   const getGradeColor = (grade: string) => {
     switch (grade) {
-      case 'A+': return 'green'
-      case 'A': return 'green'
-      case 'B': return 'blue'
-      case 'C': return 'yellow'
-      case 'D': return 'orange'
-      case 'F': return 'red'
-      default: return 'gray'
+      case 'A+':
+        return 'green'
+      case 'A':
+        return 'green'
+      case 'B':
+        return 'blue'
+      case 'C':
+        return 'yellow'
+      case 'D':
+        return 'orange'
+      case 'F':
+        return 'red'
+      default:
+        return 'gray'
     }
   }
 
   const stats = {
     totalExams: examinations.length,
-    upcoming: examinations.filter(e => e.status === 'upcoming').length,
-    ongoing: examinations.filter(e => e.status === 'ongoing').length,
-    completed: examinations.filter(e => e.status === 'completed').length,
+    upcoming: examinations.filter((e) => e.status === 'upcoming').length,
+    ongoing: examinations.filter((e) => e.status === 'ongoing').length,
+    completed: examinations.filter((e) => e.status === 'completed').length,
   }
 
   return (
@@ -278,9 +292,7 @@ export default function ExaminationsPage() {
             Export Schedule
           </Button>
           {userRole === 'admin' && (
-            <Button leftSection={<IconPlus size={16} />}>
-              Create Exam
-            </Button>
+            <Button leftSection={<IconPlus size={16} />}>Create Exam</Button>
           )}
         </Group>
       </Group>
@@ -395,18 +407,21 @@ export default function ExaminationsPage() {
                 </Grid.Col>
               </Grid>
 
-              <Stack spacing="md">
+              <Stack gap="md">
                 {examinations
-                  .filter(exam =>
-                    exam.name.toLowerCase().includes(searchQuery.toLowerCase()) &&
-                    (!filterCourse || exam.course === filterCourse) &&
-                    (!filterSemester || exam.semester.toString() === filterSemester)
+                  .filter(
+                    (exam) =>
+                      exam.name.toLowerCase().includes(searchQuery.toLowerCase()) &&
+                      (!filterCourse || exam.course === filterCourse) &&
+                      (!filterSemester || exam.semester.toString() === filterSemester)
                   )
                   .map((exam) => (
                     <Paper key={exam.id} withBorder p="md">
                       <Group justify="space-between" mb="md">
                         <div>
-                          <Text fw={600} size="lg">{exam.name}</Text>
+                          <Text fw={600} size="lg">
+                            {exam.name}
+                          </Text>
                           <Text size="sm" color="dimmed">
                             {exam.course} - Semester {exam.semester}
                           </Text>
@@ -418,13 +433,18 @@ export default function ExaminationsPage() {
 
                       <Grid>
                         <Grid.Col span={{ base: 12, md: 6 }}>
-                          <Text size="sm" color="dimmed">Duration</Text>
+                          <Text size="sm" color="dimmed">
+                            Duration
+                          </Text>
                           <Text size="sm">
-                            {exam.start_date.toLocaleDateString()} - {exam.end_date.toLocaleDateString()}
+                            {exam.start_date.toLocaleDateString()} -{' '}
+                            {exam.end_date.toLocaleDateString()}
                           </Text>
                         </Grid.Col>
                         <Grid.Col span={{ base: 12, md: 6 }}>
-                          <Text size="sm" color="dimmed">Total Subjects</Text>
+                          <Text size="sm" color="dimmed">
+                            Total Subjects
+                          </Text>
                           <Text size="sm">{exam.subjects.length}</Text>
                         </Grid.Col>
                       </Grid>
@@ -449,7 +469,9 @@ export default function ExaminationsPage() {
                                 <Table.Td>{subject.subject_name}</Table.Td>
                                 <Table.Td>{subject.subject_code}</Table.Td>
                                 <Table.Td>{subject.exam_date.toLocaleDateString()}</Table.Td>
-                                <Table.Td>{subject.start_time} - {subject.end_time}</Table.Td>
+                                <Table.Td>
+                                  {subject.start_time} - {subject.end_time}
+                                </Table.Td>
                                 <Table.Td>{subject.venue}</Table.Td>
                                 <Table.Td>{subject.max_marks}</Table.Td>
                               </Table.Tr>
@@ -496,7 +518,9 @@ export default function ExaminationsPage() {
                 <Stack>
                   <Group justify="space-between">
                     <div>
-                      <Text fw={600} size="lg">{selectedExam.name} Results</Text>
+                      <Text fw={600} size="lg">
+                        {selectedExam.name} Results
+                      </Text>
                       <Text size="sm" color="dimmed">
                         {selectedExam.course} - Semester {selectedExam.semester}
                       </Text>
@@ -509,31 +533,48 @@ export default function ExaminationsPage() {
                   <Grid mb="md">
                     <Grid.Col span={{ base: 12, sm: 6, md: 3 }}>
                       <Card withBorder p="md">
-                        <Text size="sm" color="dimmed">Total Students</Text>
-                        <Text size="xl" fw={700}>{results.length}</Text>
-                      </Card>
-                    </Grid.Col>
-                    <Grid.Col span={{ base: 12, sm: 6, md: 3 }}>
-                      <Card withBorder p="md">
-                        <Text size="sm" color="dimmed">Pass Percentage</Text>
-                        <Text size="xl" fw={700} color="green">
-                          {Math.round((results.filter(r => r.status === 'pass').length / results.length) * 100)}%
+                        <Text size="sm" color="dimmed">
+                          Total Students
                         </Text>
-                      </Card>
-                    </Grid.Col>
-                    <Grid.Col span={{ base: 12, sm: 6, md: 3 }}>
-                      <Card withBorder p="md">
-                        <Text size="sm" color="dimmed">Highest Score</Text>
-                        <Text size="xl" fw={700} color="blue">
-                          {Math.max(...results.map(r => r.percentage))}%
-                        </Text>
-                      </Card>
-                    </Grid.Col>
-                    <Grid.Col span={{ base: 12, sm: 6, md: 3 }}>
-                      <Card withBorder p="md">
-                        <Text size="sm" color="dimmed">Average Score</Text>
                         <Text size="xl" fw={700}>
-                          {(results.reduce((sum, r) => sum + r.percentage, 0) / results.length).toFixed(1)}%
+                          {results.length}
+                        </Text>
+                      </Card>
+                    </Grid.Col>
+                    <Grid.Col span={{ base: 12, sm: 6, md: 3 }}>
+                      <Card withBorder p="md">
+                        <Text size="sm" color="dimmed">
+                          Pass Percentage
+                        </Text>
+                        <Text size="xl" fw={700} color="green">
+                          {Math.round(
+                            (results.filter((r) => r.status === 'pass').length / results.length) *
+                              100
+                          )}
+                          %
+                        </Text>
+                      </Card>
+                    </Grid.Col>
+                    <Grid.Col span={{ base: 12, sm: 6, md: 3 }}>
+                      <Card withBorder p="md">
+                        <Text size="sm" color="dimmed">
+                          Highest Score
+                        </Text>
+                        <Text size="xl" fw={700} color="blue">
+                          {Math.max(...results.map((r) => r.percentage))}%
+                        </Text>
+                      </Card>
+                    </Grid.Col>
+                    <Grid.Col span={{ base: 12, sm: 6, md: 3 }}>
+                      <Card withBorder p="md">
+                        <Text size="sm" color="dimmed">
+                          Average Score
+                        </Text>
+                        <Text size="xl" fw={700}>
+                          {(
+                            results.reduce((sum, r) => sum + r.percentage, 0) / results.length
+                          ).toFixed(1)}
+                          %
                         </Text>
                       </Card>
                     </Grid.Col>
@@ -572,7 +613,10 @@ export default function ExaminationsPage() {
                               </Badge>
                             </Table.Td>
                             <Table.Td>
-                              <Badge color={result.status === 'pass' ? 'green' : 'red'} variant="light">
+                              <Badge
+                                color={result.status === 'pass' ? 'green' : 'red'}
+                                variant="light"
+                              >
                                 {result.status.toUpperCase()}
                               </Badge>
                             </Table.Td>
@@ -594,7 +638,8 @@ export default function ExaminationsPage() {
             <Tabs.Panel value="marks" pt="xs">
               <div className="p-4">
                 <Alert icon={<IconAlertCircle size={16} />} color="blue" mb="md">
-                  Select an examination from the schedule tab and click "Enter Marks" to input student marks.
+                  Select an examination from the schedule tab and click "Enter Marks" to input
+                  student marks.
                 </Alert>
                 {/* Marks entry interface would go here */}
               </div>

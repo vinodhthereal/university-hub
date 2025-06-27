@@ -5,12 +5,13 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
       <Container size="lg" className="py-20">
-        <Stack align="center" spacing="xl">
-          <Title order={1} size="h1" weight={700} align="center" className="text-5xl">
+        <Stack align="center" gap="xl">
+          <Title order={1} size="h1" fw={700} ta="center" className="text-5xl">
             Welcome to University Hub
           </Title>
-          <Text size="xl" color="dimmed" align="center" className="max-w-2xl">
-            Your complete campus management solution. Manage registration, attendance, examinations, fees, and more - all in one place.
+          <Text size="xl" color="dimmed" ta="center" className="max-w-2xl">
+            Your complete campus management solution. Manage registration, attendance, examinations,
+            fees, and more - all in one place.
           </Text>
           <Group mt="xl">
             <Link href="/login">
@@ -30,13 +31,15 @@ export default function HomePage() {
           <div className="card p-6">
             <h3 className="text-xl font-semibold mb-3">For Students</h3>
             <p className="text-gray-600 dark:text-gray-400">
-              Access your courses, view attendance, check results, pay fees, and apply for out-passes online.
+              Access your courses, view attendance, check results, pay fees, and apply for
+              out-passes online.
             </p>
           </div>
           <div className="card p-6">
             <h3 className="text-xl font-semibold mb-3">For Faculty</h3>
             <p className="text-gray-600 dark:text-gray-400">
-              Manage attendance, upload marks, view schedules, and communicate with students efficiently.
+              Manage attendance, upload marks, view schedules, and communicate with students
+              efficiently.
             </p>
           </div>
           <div className="card p-6">

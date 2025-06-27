@@ -3,6 +3,7 @@
 ## Technology Stack
 
 ### Frontend
+
 - **Framework**: Next.js 14+ (App Router)
 - **Styling**: Tailwind CSS
 - **UI Library**: Mantine UI v7+
@@ -11,6 +12,7 @@
 - **Charts**: Recharts / Chart.js
 
 ### Backend & Database
+
 - **Primary Option**: Supabase
   - PostgreSQL database
   - Real-time subscriptions
@@ -27,6 +29,7 @@
   - Real-time updates
 
 ### Development Tools
+
 - **Language**: TypeScript
 - **Package Manager**: pnpm / npm
 - **Linting**: ESLint
@@ -272,8 +275,8 @@ CREATE POLICY "Students can view their own data" ON students
 CREATE POLICY "Admins can view all students" ON students
   FOR SELECT USING (
     EXISTS (
-      SELECT 1 FROM users 
-      WHERE users.id = auth.uid() 
+      SELECT 1 FROM users
+      WHERE users.id = auth.uid()
       AND users.role IN ('admin', 'super_admin')
     )
   );
@@ -283,7 +286,7 @@ CREATE POLICY "Faculty can view students in their department" ON students
     EXISTS (
       SELECT 1 FROM users u
       JOIN courses c ON c.department_id = u.department_id
-      WHERE u.id = auth.uid() 
+      WHERE u.id = auth.uid()
       AND u.role = 'faculty'
       AND students.course_id = c.id
     )
@@ -403,7 +406,7 @@ import { useRouter } from 'next/navigation'
 export default function LoginPage() {
   const router = useRouter()
   const supabase = createClient()
-  
+
   const form = useForm({
     initialValues: {
       email: '',
@@ -553,16 +556,14 @@ import { createClient } from '@/lib/supabase/client'
 
 export async function uploadFile(file: File, path: string) {
   const supabase = createClient()
-  
-  const { data, error } = await supabase.storage
-    .from('university-hub-storage')
-    .upload(path, file)
+
+  const { data, error } = await supabase.storage.from('university-hub-storage').upload(path, file)
 
   if (error) throw error
-  
-  const { data: { publicUrl } } = supabase.storage
-    .from('university-hub-storage')
-    .getPublicUrl(path)
+
+  const {
+    data: { publicUrl },
+  } = supabase.storage.from('university-hub-storage').getPublicUrl(path)
 
   return publicUrl
 }
@@ -585,7 +586,7 @@ export function Navigation() {
     switch (role) {
       case 'admin':
       case 'super_admin':
-        return [...baseItems, 
+        return [...baseItems,
           { label: 'Students', href: '/dashboard/students' },
           { label: 'Faculty', href: '/dashboard/faculty' },
           { label: 'Analytics', href: '/dashboard/analytics' },
